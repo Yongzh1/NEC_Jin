@@ -1,6 +1,6 @@
 .DS_Store
-MultiModal_RAG/multimodal RAG/lancedb
-MultiModal_RAG/multimodal RAG/mixed_data
-MultiModal_RAG/multimodal RAG/TEST
-MultiModal_RAG/multimodal RAG/video_data/input_vid.mp4
+MultiModal_RAG/LLaMa/lancedb
+MultiModal_RAG/LLaMa/mixed_data
+MultiModal_RAG/LLaMa/TEST
+MultiModal_RAG/LLaMa/video_data/input_vid.mp4
 .env
