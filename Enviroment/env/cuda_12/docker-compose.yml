@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  jupyter:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8892:8892"
+    depends_on:

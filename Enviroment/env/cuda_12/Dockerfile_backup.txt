@@ -1,0 +1,94 @@
+# Base image
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime as pytorch
+FROM nvidia/cuda:12.2.0-runtime-ubuntu20.04 as nvidia
+
+# Environment variables
+ENV CUDA_MAJOR_VERSION=12
+ENV CUDA_MINOR_VERSION=2
+ENV CUDA_VERSION=$CUDA_MAJOR_VERSION.$CUDA_MINOR_VERSION
+
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/opt/bin:$PATH
+
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV NVIDIA_REQUIRE_CUDA "cuda>=$CUDA_MAJOR_VERSION.$CUDA_MINOR_VERSION"
+
+# Linux commands to update and install base packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    unzip \
+    cmake \
+    libboost-dev \
+    libboost-system-dev \
+    libboost-filesystem-dev \
+    p7zip-full \
+    openssh-client \
+    python3.9 \
+    python3.9-venv \
+    python3.9-distutils && \
+    apt-get install -y libglib2.0-0 libxext6 libsm6 libxrender1 libfontconfig1 --fix-missing && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
+# Additional Argument variable
+ARG CONDA_DIR=/opt/CONDA_DIR
+# add it to path
+ENV PATH ${CONDA_DIR}/bin:${PATH}
+
+# 必要なパッケージをインストール
+RUN apt-get update && apt-get install -y python3-venv python3-pip
+
+# 仮想環境を作成
+RUN python3.9 -m venv /venv
+
+# 仮想環境のpipを使用してパッケージをインストール
+RUN /venv/bin/pip install --upgrade pip
+RUN /venv/bin/pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nvidia-cuda-runtime-cu12
+
+# RUN pip install --upgrade cython && \
+#    pip install --upgrade cysignals && 
+RUN /venv/bin/pip install --no-cache-dir \
+    defusedxml \
+    docker-pycreds \
+    docutils \
+    gensim \
+    gitdb \
+    glibc \
+    GitPython \
+    json5 \
+    jupyter \
+    jupyterlab \
+    jupyter-client \
+    jupyter-console \
+    jupyter-core \
+    jupyterlab-lsp \
+    papermill \
+    numpy \
+    oauthlib \
+    opencv-python \
+    optuna \
+    pandas \
+    pandocfilters \
+    parso \
+    plotly \
+    Pillow \
+    pydot \
+    python-dateutil \
+    scikit-image \
+    scikit-learn \
+    scipy \
+    statsmodels \
+    stevedore \
+    termcolor 
+RUN /venv/bin/pip install --no-cache-dir \
+    tqdm \
+    textblob \
+    transformers \
+    joblib 
+
+
+# Expose the port to the outside Docker (in your broswer)
+EXPOSE 8891
+
+# Automatically run these command in the end
+ENTRYPOINT ["/venv/bin/jupyter", "lab", "--ip=0.0.0.0", "--port=8891","--allow-root", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]
