@@ -87,6 +87,7 @@ def retrieve(retriever_engine, query_str):
     return retrieved_image, retrieved_text
 
 def main(filename,query):
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
     video_path = './video/' + filename
     output_folder = "./img/" + filename + '/'
     output_audio_path = output_folder + "output_audio.wav"
@@ -139,8 +140,7 @@ def main(filename,query):
     
     execution_time = end_time - start_time
     print("************** Retrieve Time **************\n")
-    print(f"Execution time: {execution_time} seconds")
-    print("\n*****************************************")
+    print(f"Execution time: {execution_time} seconds\n")
     
     #Generation 
     qa_tmpl_str = (
@@ -167,7 +167,11 @@ def main(filename,query):
         image_documents=image_documents,
     )
     
+    print("************** QUERY **************\n")
+    print(query)
+    print("\n************** OUTPUT **************\n")
     print(response_1.text)
+    print("\n************************************")
 
 if __name__ == "__main__":
     # argparseを使ってコマンドライン引数を設定

@@ -120,9 +120,8 @@ def retrieve(output_folder,query):
 
     # 実行時間を表示
     execution_time = end_time - start_time
-    print("************** Retrieve Time **************\n")
-    print(f"Execution time: {execution_time} seconds")
-    print("\n*****************************************")
+    print("********** Retrieve Time **********\n")
+    print(f"Execution time: {execution_time} seconds\n")
     return idx_top_n
     
 def run_llama(txt, query, output_folder, qa_tmpl_str, idx_top_n):
@@ -151,7 +150,9 @@ def run_llama(txt, query, output_folder, qa_tmpl_str, idx_top_n):
             context_str=context_str, query_str=query_str, ),
         image_documents=image_documents,
     )
-    print("************** OUTPUT **************\n")
+    print("************** QUERY **************\n")
+    print(query)
+    print("\n************** OUTPUT **************\n")
     print(response_1.text)
     print("\n************************************")
     
@@ -175,6 +176,7 @@ def generate_answer(txt, output_folder, query, idx_top_n):
     run_llama(txt, query, output_folder, qa_tmpl_str, idx_top_n)
     
 def main(filename,query):
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
     video_path = './video/' + filename
     output_folder = "./img/" + filename + '/'
     output_audio_path = output_folder + "output_audio.wav"
